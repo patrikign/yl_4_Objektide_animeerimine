@@ -9,7 +9,7 @@ WIDTH, HEIGHT = 640, 480
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Autode mäng")
 
-#Pildid
+# Pildid
 taust = pygame.image.load("bg_rally.jpg")
 punane_auto = pygame.image.load("f1_red.png")
 sinine_auto = pygame.image.load("f1_blue.png")
@@ -26,7 +26,6 @@ def wait_for_start():
         start_text = font.render("Vajuta ENTER, et alustada", True, (255, 255, 255))
         screen.blit(start_text, (WIDTH // 2 - 140, HEIGHT // 2))
         pygame.display.flip()
-
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -35,22 +34,15 @@ def wait_for_start():
                 return
 
 
-# Mängufunktsioon
 def run_game():
     red_x = WIDTH // 2 - car_width // 2
-    red_y = HEIGHT // 2 - car_height // 2
+    red_y = HEIGHT - car_height - 20  # Aseta punane auto alla
 
     blue_cars = []
     for _ in range(3):
-        while True:
-            blue_x = random.randint(170, WIDTH - 170 - car_width)
-            blue_y = random.randint(50, HEIGHT + 300)
-
-            # Kontrolli, et sinine auto ei spawniks punase auto peale
-            if not (
-                    red_x < blue_x + car_width and red_x + car_width > blue_x and red_y < blue_y + car_height and red_y + car_height > blue_y):
-                blue_cars.append([blue_x, blue_y])
-                break
+        blue_x = random.randint(170, WIDTH - 170 - car_width)
+        blue_y = random.randint(-300, -50)  # Sinised autod alustavad ülevalt
+        blue_cars.append([blue_x, blue_y])
 
     score = 0
     speed = 5
@@ -69,9 +61,9 @@ def run_game():
 
         # Siniste autode liikumine ja kokkupõrke tuvastamine
         for car in blue_cars:
-            car[1] -= 5
-            if car[1] < -car_height:
-                car[1] = random.randint(HEIGHT, HEIGHT + 300)
+            car[1] += 5  # Liiguvad alt üles
+            if car[1] > HEIGHT:
+                car[1] = random.randint(-300, -50)
                 car[0] = random.randint(170, WIDTH - 170 - car_width)
                 score += 1
             screen.blit(sinine_auto, (car[0], car[1]))
@@ -81,7 +73,7 @@ def run_game():
                 1] + car_height and red_y + car_height > car[1]:
                 running = False
 
-                # Kuva skoor
+        # Kuva skoor
         font = pygame.font.Font(None, 36)
         score_text = font.render("Skoor: " + str(score), True, (255, 255, 255))
         screen.blit(score_text, (10, 10))
@@ -91,6 +83,10 @@ def run_game():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 return
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_q:  # Kontrolli, kas on vajutatud 'q'
+                    pygame.quit()
+                    return
 
         pygame.display.flip()
         clock.tick(30)
@@ -103,13 +99,15 @@ def run_game():
         screen.blit(game_over_text, (WIDTH // 2 - 100, HEIGHT // 2 - 20))
         screen.blit(restart_text, (WIDTH // 2 - 140, HEIGHT // 2 + 20))
         pygame.display.flip()
-
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 return
             if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
                 run_game()
+                return
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_q:  # Kontrolli, kas on vajutatud 'q'
+                pygame.quit()
                 return
 
 
