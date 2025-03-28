@@ -23,8 +23,8 @@ def wait_for_start():
     font = pygame.font.Font(None, 36)
     while True:
         screen.fill((0, 0, 0))
-        start_text = font.render("Vajuta ENTER, et alustada", True, (255, 255, 255))
-        screen.blit(start_text, (WIDTH // 2 - 140, HEIGHT // 2))
+        start_text = font.render("Vajuta ENTER, et alustada ja Q et lõpetada", True, (255, 255, 255))
+        screen.blit(start_text, (WIDTH // 3 - 140, HEIGHT // 2))
         pygame.display.flip()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
